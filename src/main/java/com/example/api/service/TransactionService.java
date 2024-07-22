@@ -6,6 +6,7 @@ import com.example.api.repository.AggregatedExpenseRepository;
 import com.example.api.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -25,6 +26,8 @@ public class TransactionService {
      * @param transaction oluşturulacak işlem nesnesi
      * @return kaydedilen işlem nesnesi
      */
+
+    @Transactional
     public Transaction createTransaction(Transaction transaction) {
         transactionRepository.save(transaction);
         return transaction;
@@ -35,6 +38,8 @@ public class TransactionService {
      * @param userId kullanıcı ID'si
      * @return işlem listesi
      */
+
+    @Transactional
     public List<Transaction> getTransactionsByUserId(Long userId) {
         return transactionRepository.findByUserId(userId);
     }
@@ -43,6 +48,8 @@ public class TransactionService {
      * Tüm işlemleri döner.
      * @return işlem listesi
      */
+
+    @Transactional
     public List<Transaction> getAllTransactions() {
         return transactionRepository.findAll();
     }
@@ -52,6 +59,8 @@ public class TransactionService {
      * @param id işlem ID'si
      * @return bulunan işlem nesnesi
      */
+
+    @Transactional
     public Transaction getTransactionById(Long id) {
         return transactionRepository.findById(id);
     }
@@ -62,6 +71,8 @@ public class TransactionService {
      * @param transactionDetails işlemin güncel bilgileri
      * @return güncellenen işlem nesnesi
      */
+
+    @Transactional
     public Transaction updateTransaction(Long id, Transaction transactionDetails) {
         Transaction transaction = transactionRepository.findById(id);
         transaction.setAmount(transactionDetails.getAmount());
@@ -75,6 +86,8 @@ public class TransactionService {
      * Belirtilen ID'ye sahip işlemi siler.
      * @param id silinecek işlemin ID'si
      */
+
+    @Transactional
     public void deleteTransaction(Long id) {
         transactionRepository.delete(id);
     }
@@ -84,6 +97,7 @@ public class TransactionService {
      * @param userId kullanıcı ID'si
      * @return toplam harcama miktarı
      */
+    @Transactional
     public Double getTotalSpendingByUserId(Long userId) {
         return transactionRepository.getTotalSpendingByUserId(userId);
     }
@@ -92,6 +106,8 @@ public class TransactionService {
      * Belirli bir periyotta kullanıcıların harcamalarını toplar ve kaydeder.
      * @param period toplama periyodu ("DAILY", "WEEKLY", "MONTHLY", "TEST")
      */
+
+    @Transactional
     public void aggregateExpenses(String period) {
         List<Long> userIds = transactionRepository.findAllUserIds();
         LocalDateTime startDateTime = LocalDateTime.now();

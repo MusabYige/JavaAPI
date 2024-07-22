@@ -104,4 +104,8 @@ public class TransactionRepository {
         Double total = jdbcTemplate.queryForObject(sql, new Object[]{userId, java.sql.Date.valueOf(startDate), java.sql.Date.valueOf(endDate)}, Double.class);
         return (total != null) ? total : 0.0;
     }
+
+    public int deleteByUserId(Long userId) {
+        return jdbcTemplate.update("DELETE FROM transactions WHERE user_id = ?", userId);
+    }
 }

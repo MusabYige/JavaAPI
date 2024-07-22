@@ -1,9 +1,11 @@
 package com.example.api.service;
 
+import com.example.api.repository.TransactionRepository;
 import com.example.api.model.User;
 import com.example.api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -11,11 +13,16 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private TransactionRepository transactionRepository;
+
     /**
      * Yeni bir kullanıcı oluşturur ve kaydeder.
      * @param user oluşturulacak kullanıcı nesnesi
      * @return kaydedilen kullanıcı nesnesi
      */
+
+    @Transactional
     public User createUser(User user) {
         userRepository.save(user);
         return user;
@@ -26,6 +33,8 @@ public class UserService {
      * @param id kullanıcı ID'si
      * @return bulunan kullanıcı nesnesi
      */
+
+    @Transactional
     public User getUser(Long id) {
         return userRepository.findById(id);
     }
@@ -36,6 +45,8 @@ public class UserService {
      * @param userDetails kullanıcının güncel bilgileri
      * @return güncellenen kullanıcı nesnesi
      */
+
+    @Transactional
     public User updateUser(Long id, User userDetails) {
         User user = getUser(id);
         user.setName(userDetails.getName());
@@ -48,7 +59,12 @@ public class UserService {
      * Belirtilen ID'ye sahip kullanıcıyı siler.
      * @param id silinecek kullanıcının ID'si
      */
+    @Transactional
     public void deleteUser(Long id) {
+        // First, delete or handle the user's transactions
+        transactionRepository.deleteByUserId(id);
+
+        // Then, delete the user
         userRepository.delete(id);
     }
 }
